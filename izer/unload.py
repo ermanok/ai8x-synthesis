@@ -1,5 +1,5 @@
 ###################################################################################################
-# Copyright (C) 2019-2021 Maxim Integrated Products, Inc. All Rights Reserved.
+# Copyright (C) Maxim Integrated Products, Inc. All Rights Reserved.
 #
 # Maxim Integrated Products, Inc. Default Copyright Notice:
 # https://www.maximintegrated.com/en/aboutus/legal/copyrights.html
@@ -16,6 +16,23 @@ from . import state, toplevel
 from . import tornadocnn as tc
 from .eprint import eprint, wprint
 from .utils import ffs, popcount
+
+
+def unload_empty(
+        memfile: TextIO,
+        output_width: int = 8
+):
+    """
+    Unload HWC memory from hardware, writing C code to the `memfile` handle.
+    The C code includes an empty function that returns OK.
+    """
+    assert tc.dev is not None
+
+    memfile.write('// Unload function for this network.\n')
+    toplevel.function_header(memfile, function='unload',
+                             arguments=f'uint32_t *out_buf{"32" if output_width != 32 else ""}')
+    memfile.write('  //TODO: Complete the function definition!!')
+    toplevel.function_footer(memfile)  # unload()
 
 
 def unload(
